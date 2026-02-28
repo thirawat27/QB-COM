@@ -1,0 +1,73 @@
+[workspace]
+resolver = "2"
+
+members = [
+    "crates/core",
+    "crates/lexer",
+    "crates/parser",
+    "crates/semantic",
+    "crates/vm",
+    "crates/codegen",
+    "crates/hal",
+    "cli",
+]
+
+[workspace.package]
+version = "1.0.0"
+edition = "2021"
+authors = ["Thirawat27 <your.email@example.com>"]
+repository = "https://github.com/thirawat27/QB-COM"
+license = "MIT"
+keywords = ["qbasic", "quickbasic", "compiler", "interpreter", "dos"]
+categories = ["compilers", "emulators", "command-line-utilities"]
+
+[workspace.dependencies]
+# Internal crates
+qb-core = { path = "crates/core" }
+qb-lexer = { path = "crates/lexer" }
+qb-parser = { path = "crates/parser" }
+qb-semantic = { path = "crates/semantic" }
+qb-vm = { path = "crates/vm" }
+qb-codegen = { path = "crates/codegen" }
+qb-hal = { path = "crates/hal" }
+
+# Core dependencies
+thiserror = "1.0"
+anyhow = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+
+# CLI and configuration
+clap = { version = "4.5", features = ["derive"] }
+config = "0.14"
+directories = "5.0"
+
+# Graphics and HAL (for future use)
+# winit = "0.29"
+# pixels = "0.13"
+# raw-window-handle = "0.6"
+
+# Audio (for future use)
+# cpal = "0.15"
+# rodio = "0.17"
+
+# LLVM Backend (optional)
+# inkwell = { version = "0.4", features = ["llvm17-0"] }
+
+# Utilities
+indexmap = "2.2"
+bincode = "1.3"
+toml = "0.8"
+
+# Testing
+pretty_assertions = "1.4"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
+
+[profile.dev]
+opt-level = 0
+debug = true

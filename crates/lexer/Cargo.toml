@@ -1,0 +1,17 @@
+[package]
+name = "qb-lexer"
+version = "1.0.0"
+edition = "2021"
+authors = ["Thirawat27 <your.email@example.com>"]
+description = "Lexical analyzer (tokenizer) for QBasic"
+repository = "https://github.com/thirawat27/QB-COM"
+license = "MIT"
+keywords = ["qbasic", "quickbasic", "lexer", "tokenizer"]
+categories = ["compilers", "parsing"]
+
+[dependencies]
+qb-core = { path = "../core" }
+thiserror = "1.0"
+
+[dev-dependencies]
+pretty_assertions = "1.4"

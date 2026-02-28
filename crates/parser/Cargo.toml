@@ -1,0 +1,19 @@
+[package]
+name = "qb-parser"
+version = "1.0.0"
+edition = "2021"
+authors = ["Thirawat27 <your.email@example.com>"]
+description = "Parser and Abstract Syntax Tree (AST) for QBasic"
+repository = "https://github.com/thirawat27/QB-COM"
+license = "MIT"
+keywords = ["qbasic", "quickbasic", "parser", "ast"]
+categories = ["compilers", "parsing"]
+
+[dependencies]
+qb-core = { path = "../core" }
+qb-lexer = { path = "../lexer" }
+thiserror = "1.0"
+indexmap = "2.2"
+
+[dev-dependencies]
+pretty_assertions = "1.4"

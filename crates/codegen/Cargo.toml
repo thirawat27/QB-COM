@@ -1,0 +1,21 @@
+[package]
+name = "qb-codegen"
+version = "1.0.0"
+edition = "2021"
+authors = ["Thirawat27 <your.email@example.com>"]
+description = "Native code generator for QBasic (LLVM backend)"
+repository = "https://github.com/thirawat27/QB-COM"
+license = "MIT"
+keywords = ["qbasic", "quickbasic", "compiler", "llvm", "codegen"]
+categories = ["compilers"]
+
+[dependencies]
+qb-core = { path = "../core" }
+qb-parser = { path = "../parser" }
+qb-semantic = { path = "../semantic" }
+thiserror = "1.0"
+# inkwell = { version = "0.4", features = ["llvm17-0"], optional = true }
+
+[features]
+default = []
+llvm = [] # "inkwell"

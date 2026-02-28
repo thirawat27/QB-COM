@@ -1,0 +1,17 @@
+[package]
+name = "qb-core"
+version = "1.0.0"
+edition = "2021"
+authors = ["Thirawat27 <your.email@example.com>"]
+description = "Core types, memory emulation, and error handling for QB-COM"
+repository = "https://github.com/thirawat27/QB-COM"
+license = "MIT"
+keywords = ["qbasic", "quickbasic", "dos", "emulation"]
+categories = ["compilers", "emulators"]
+
+[dependencies]
+thiserror = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+
+[dev-dependencies]
+pretty_assertions = "1.4"

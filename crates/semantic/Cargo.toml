@@ -1,0 +1,19 @@
+[package]
+name = "qb-semantic"
+version = "1.0.0"
+edition = "2021"
+authors = ["Thirawat27 <your.email@example.com>"]
+description = "Semantic analyzer and type checker for QBasic"
+repository = "https://github.com/thirawat27/QB-COM"
+license = "MIT"
+keywords = ["qbasic", "quickbasic", "semantic", "type-checker"]
+categories = ["compilers"]
+
+[dependencies]
+qb-core = { path = "../core" }
+qb-parser = { path = "../parser" }
+thiserror = "1.0"
+indexmap = "2.2"
+
+[dev-dependencies]
+pretty_assertions = "1.4"
