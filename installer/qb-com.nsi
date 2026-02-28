@@ -76,7 +76,7 @@ done:
     Pop $0
 FunctionEnd
 
-; Function to remove from PATH
+; Function to remove from PATH (for install)
 Function RemoveFromPath
     Exch $0
     Push $1
@@ -126,6 +126,56 @@ done:
     Pop $0
 FunctionEnd
 
+; Uninstaller function to remove from PATH
+Function un.RemoveFromPath
+    Exch $0
+    Push $1
+    Push $2
+    Push $3
+    Push $4
+    Push $5
+    
+    ; Read current PATH
+    ReadRegStr $1 HKLM "SYSTEM\CurrentControlSet\Control\Session Manager\Environment" "Path"
+    
+    ; Find and remove our path
+    StrCpy $2 "$1"
+    StrCpy $1 ""
+    
+unloop:
+    StrCpy $3 $2 1
+    StrCmp $3 "" undone
+    StrCpy $4 $2 1 -1
+    StrCmp $4 ";" 0 +3
+    StrCpy $2 $2 -1
+    Goto unloop
+    
+    Push $2
+    Push ";"
+    Call un.SplitFirstStrPart
+    Pop $3
+    Pop $2
+    
+    StrCmp $3 $0 unloop
+    StrCmp $1 "" 0 +3
+    StrCpy $1 "$3"
+    Goto +2
+    StrCpy $1 "$1;$3"
+    
+    StrCmp $2 "" undone unloop
+    
+undone:
+    WriteRegExpandStr HKLM "SYSTEM\CurrentControlSet\Control\Session Manager\Environment" "Path" "$1"
+    SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=5000
+    
+    Pop $5
+    Pop $4
+    Pop $3
+    Pop $2
+    Pop $1
+    Pop $0
+FunctionEnd
+
 ; Helper function: Find substring
 Function StrStr
     Exch $R1 ; string to find
@@ -158,6 +208,31 @@ FunctionEnd
 
 ; Helper function: Split string
 Function SplitFirstStrPart
+    Exch $R0 ; separator
+    Exch
+    Exch $R1 ; string
+    Push $R2
+    Push $R3
+    StrLen $R2 $R0
+    StrCpy $R3 $R1 $R2
+    StrCmp $R3 $R0 +3
+    StrCpy $R0 ""
+    Goto +5
+    StrCpy $R1 $R1 $R2 0
+    IntOp $R2 $R2 * -1
+    StrCpy $R1 $R1 $R2
+    StrCpy $R0 1
+    StrCmp $R0 1 +2
+    StrCpy $R1 ""
+    Pop $R3
+    Pop $R2
+    Exch $R1
+    Exch
+    Exch $R0
+FunctionEnd
+
+; Uninstaller version of SplitFirstStrPart
+Function un.SplitFirstStrPart
     Exch $R0 ; separator
     Exch
     Exch $R1 ; string
@@ -263,7 +338,7 @@ SectionEnd
 Section "Uninstall"
     ; Remove from PATH first
     Push "$INSTDIR"
-    Call RemoveFromPath
+    Call un.RemoveFromPath
     
     ; Remove installed files
     Delete "$INSTDIR\qb.exe"
