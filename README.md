@@ -87,7 +87,7 @@ curl -fsSL https://raw.githubusercontent.com/thirawat27/QB-COM/main/scripts/inst
 
 Download and run the Windows installer:
 
-1. Download `QB-COM-Setup.exe` from [Releases](https://github.com/thirawat27/QB-COM/releases)
+1. Download `QB-COM-Setup-1.0.0.exe` from [Releases](https://github.com/thirawat27/QB-COM/releases)
 2. Run the installer and follow the wizard
 3. The installer will:
    - Install QB-COM to `Program Files\QB-COM`
@@ -97,7 +97,7 @@ Download and run the Windows installer:
 
 **Silent Installation:**
 ```cmd
-QB-COM-Setup.exe /S
+QB-COM-Setup-1.0.0.exe /S
 ```
 
 ### Build from Source
@@ -761,7 +761,7 @@ build-installer.bat
 
 The installer will be created at:
 ```
-installer\QB-COM-Setup.exe
+installer\QB-COM-Setup-1.0.0.exe
 ```
 
 ### Installer Features

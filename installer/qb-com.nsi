@@ -2,7 +2,7 @@
 ; Requires: NSIS 3.0+
 ; Build: makensis qb-com.nsi
 
-!include "MUI2.nsh"
+!include "MUI.nsh"
 !include "LogicLib.nsh"
 !include "x64.nsh"
 
@@ -30,6 +30,7 @@ SetCompressor lzma
 ; Pages
 !insertmacro MUI_PAGE_WELCOME
 !insertmacro MUI_PAGE_LICENSE "..\LICENSE"
+!insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH
@@ -42,8 +43,7 @@ SetCompressor lzma
 ; Languages
 !insertmacro MUI_LANGUAGE "English"
 
-; Variables
-Var STARTMENU_FOLDER
+; (No additional variables needed)
 
 ; Function to modify PATH
 Function AddToPath
@@ -70,56 +70,6 @@ Function AddToPath
     SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=5000
     
 done:
-    Pop $3
-    Pop $2
-    Pop $1
-    Pop $0
-FunctionEnd
-
-; Function to remove from PATH (for install)
-Function RemoveFromPath
-    Exch $0
-    Push $1
-    Push $2
-    Push $3
-    Push $4
-    Push $5
-    
-    ; Read current PATH
-    ReadRegStr $1 HKLM "SYSTEM\CurrentControlSet\Control\Session Manager\Environment" "Path"
-    
-    ; Find and remove our path
-    StrCpy $2 "$1"
-    StrCpy $1 ""
-    
-loop:
-    StrCpy $3 $2 1
-    StrCmp $3 "" done
-    StrCpy $4 $2 1 -1
-    StrCmp $4 ";" 0 +3
-    StrCpy $2 $2 -1
-    Goto loop
-    
-    Push $2
-    Push ";"
-    Call SplitFirstStrPart
-    Pop $3
-    Pop $2
-    
-    StrCmp $3 $0 loop
-    StrCmp $1 "" 0 +3
-    StrCpy $1 "$3"
-    Goto +2
-    StrCpy $1 "$1;$3"
-    
-    StrCmp $2 "" done loop
-    
-done:
-    WriteRegExpandStr HKLM "SYSTEM\CurrentControlSet\Control\Session Manager\Environment" "Path" "$1"
-    SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=5000
-    
-    Pop $5
-    Pop $4
     Pop $3
     Pop $2
     Pop $1
@@ -204,31 +154,6 @@ done:
     Pop $R2
     Pop $R0
     Exch $R1
-FunctionEnd
-
-; Helper function: Split string
-Function SplitFirstStrPart
-    Exch $R0 ; separator
-    Exch
-    Exch $R1 ; string
-    Push $R2
-    Push $R3
-    StrLen $R2 $R0
-    StrCpy $R3 $R1 $R2
-    StrCmp $R3 $R0 +3
-    StrCpy $R0 ""
-    Goto +5
-    StrCpy $R1 $R1 $R2 0
-    IntOp $R2 $R2 * -1
-    StrCpy $R1 $R1 $R2
-    StrCpy $R0 1
-    StrCmp $R0 1 +2
-    StrCpy $R1 ""
-    Pop $R3
-    Pop $R2
-    Exch $R1
-    Exch
-    Exch $R0
 FunctionEnd
 
 ; Uninstaller version of SplitFirstStrPart
