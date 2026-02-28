@@ -1,87 +1,350 @@
 # QB-COM
 
-> **QBasic/QuickBASIC 4.5 + QB64 Compiler in Rust**  
-> เขียนโค้ด BASIC สมัยเก่า รันบนเครื่องสมัยใหม่
+> **QBasic/QuickBASIC 4.5 + QB64 Compiler and Runtime**  
+> A modern implementation of the classic QBasic language, written in Rust.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Rust](https://img.shields.io/badge/rust-2021-orange.svg)](https://www.rust-lang.org/)
+[![Build](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
 
 ---
 
-## 📦 ติดตั้ง (Installation)
+## 📖 Table of Contents
 
-### สิ่งที่ต้องมี
-- [Rust](https://rustup.rs/) (เวอร์ชัน 1.70 ขึ้นไป)
+- [Overview](#overview)
+- [Features](#features)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Command Reference](#command-reference)
+- [Language Reference](#language-reference)
+- [Examples](#examples)
+- [Architecture](#architecture)
+- [Development](#development)
+- [Contributing](#contributing)
+- [License](#license)
 
-### ติดตั้งแบบเร็ว
+---
+
+## Overview
+
+QB-COM is a complete QBasic/QuickBASIC 4.5 compiler and runtime environment written in Rust. It supports both traditional QBasic syntax and modern QB64 extensions, allowing you to run legacy BASIC code on modern systems or write new BASIC programs with enhanced features.
+
+### Why QB-COM?
+
+- **Compatibility**: Run your old QBasic programs without modification
+- **Modern Performance**: Rust-powered bytecode VM for fast execution
+- **QB64 Extensions**: Support for 64-bit integers, unsigned types, and more
+- **Cross-Platform**: Works on Windows, macOS, and Linux
+- **Developer Tools**: Tokenizer, parser, and AST viewer for learning/debugging
+
+---
+
+## Features
+
+### Core QBasic 4.5 Support
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Data Types | ✅ Complete | INTEGER, LONG, SINGLE, DOUBLE, STRING |
+| Variables | ✅ Complete | Suffixes (%&!#$), Arrays, User Types |
+| Control Flow | ✅ Complete | IF/THEN, FOR/NEXT, WHILE/WEND, DO/LOOP |
+| Subroutines | ✅ Complete | GOSUB/RETURN, SUB/FUNCTION |
+| I/O Operations | ✅ Complete | PRINT, INPUT, File I/O |
+| String Functions | ✅ Complete | LEFT$, RIGHT$, MID$, UCASE$, LCASE$ |
+| Math Functions | ✅ Complete | ABS, SQR, SIN, COS, RND, etc. |
+| Graphics | ⚠️ Partial | SCREEN, PSET, LINE (text mode) |
+
+### QB64 Extensions
+
+| Extension | Status | Example |
+|-----------|--------|---------|
+| `_INTEGER64` | ✅ | `DIM x AS _INTEGER64` |
+| `_UNSIGNED INTEGER` | ✅ | `DIM x AS _UNSIGNED INTEGER` |
+| `_UNSIGNED LONG` | ✅ | `DIM x AS _UNSIGNED LONG` |
+| `CONST` | ✅ | `CONST PI = 3.14159` |
+| `TYPE`/`END TYPE` | ✅ | User-defined structures |
+| Metacommands | ✅ | `$CONSOLE`, `$DYNAMIC`, `$INCLUDE` |
+
+---
+
+## Installation
+
+### Prerequisites
+
+- [Rust](https://rustup.rs/) 1.70 or later
+- Git (for cloning)
+
+### Method 1: Quick Setup (Recommended)
 
 **Windows:**
 ```batch
+git clone https://github.com/thirawat27/QB-COM.git
+cd QB-COM
 setup.bat
 ```
 
 **Linux/macOS:**
 ```bash
+git clone https://github.com/thirawat27/QB-COM.git
+cd QB-COM
 chmod +x setup.sh
 ./setup.sh
 ```
 
-### ติดตั้งด้วยตนเอง
+### Method 2: Manual Build
+
 ```bash
+# Clone repository
+git clone https://github.com/thirawat27/QB-COM.git
+cd QB-COM
+
+# Build release version
 cargo build --release
+
+# Install globally (optional)
+cargo install --path cli
+```
+
+### Method 3: Using Cargo Install
+
+```bash
+cargo install --git https://github.com/thirawat27/QB-COM
 ```
 
 ---
 
-## 🚀 วิธีใช้งาน (Usage)
+## Quick Start
 
-### 1. รันโปรแกรม QBasic
+### 1. Create Your First Program
+
+Create a file `hello.bas`:
+
+```basic
+' My first QB-COM program
+PRINT "Hello, World!"
+PRINT "Welcome to QB-COM"
+END
+```
+
+### 2. Run the Program
+
 ```bash
-# รันผ่าน cargo
-cargo run --release -- run examples/hello.bas
+# Using cargo
+cargo run --release -- run hello.bas
 
-# หรือถ้าติดตั้งแล้ว
+# Or if installed globally
+qb run hello.bas
+```
+
+**Output:**
+```
+Hello, World!
+Welcome to QB-COM
+```
+
+### 3. Explore Examples
+
+```bash
+# Run the comprehensive test suite
+cargo run --release -- run examples/test_all.bas
+
+# Try other examples
+cargo run --release -- run examples/calc.bas
+cargo run --release -- run examples/fibonacci.bas
+```
+
+---
+
+## Command Reference
+
+### `run <file>` - Execute a QBasic Program
+
+Run a QBasic source file immediately.
+
+```bash
+qb run program.bas
+```
+
+**Options:**
+- No additional options for `run`
+
+**Example:**
+```bash
 qb run examples/hello.bas
 ```
 
-### 2. คำสั่งทั้งหมด
+---
 
-| คำสั่ง | คำอธิบายสั้นๆ | ตัวอย่าง |
-|--------|-------------|---------|
-| `run <file>` | รันโปรแกรมทันที | `qb run hello.bas` |
-| `build <file>` | คอมไพล์เป็น bytecode | `qb build hello.bas -o out.qbc` |
-| `tokenize <file>` | ดู tokens ที่ lexer แยก | `qb tokenize hello.bas` |
-| `parse <file>` | ดู AST (Abstract Syntax Tree) | `qb parse hello.bas` |
-| `check <file>` | ตรวจสอบ error โดยไม่รัน | `qb check hello.bas` |
-| `repl` | โหมด interactive (REPL) | `qb repl` |
+### `build <file>` - Compile to Bytecode
+
+Compile a QBasic program to bytecode for faster subsequent execution.
+
+```bash
+qb build program.bas -o output.qbc
+```
+
+**Options:**
+| Option | Description |
+|--------|-------------|
+| `-o, --output <file>` | Specify output filename |
+
+**Example:**
+```bash
+qb build mygame.bas -o mygame.qbc
+qb run mygame.qbc
+```
 
 ---
 
-## 📝 ตัวอย่างโค้ด (Examples)
+### `tokenize <file>` - Display Token Stream
 
-### Hello World
-```basic
-PRINT "Hello, World!"
-END
+View the lexical tokens generated by the lexer. Useful for debugging syntax issues.
+
+```bash
+qb tokenize program.bas
 ```
 
-### ตัวแปรและชนิดข้อมูล
+**Example Output:**
+```
+0: Print (line 1, col 1)
+1: String("Hello") (line 1, col 7)
+2: NewLine (line 1, col 14)
+3: End (line 2, col 1)
+4: EOF (line 3, col 1)
+```
+
+---
+
+### `parse <file>` - Display AST
+
+View the Abstract Syntax Tree generated by the parser. Useful for understanding program structure.
+
+```bash
+qb parse program.bas
+```
+
+---
+
+### `check <file>` - Static Analysis
+
+Check a program for errors without executing it.
+
+```bash
+qb check program.bas
+```
+
+**Output:**
+- No output = No errors found
+- Error messages = Issues to fix
+
+---
+
+### `repl` - Interactive Mode
+
+Start an interactive Read-Eval-Print Loop for testing code snippets.
+
+```bash
+qb repl
+```
+
+**Example Session:**
+```
+QB-COM REPL
+Type 'exit' to quit
+
+> PRINT 2 + 2
+4
+> DIM x AS INTEGER
+> x = 100
+> PRINT x
+100
+> exit
+```
+
+---
+
+## Language Reference
+
+### Data Types
+
+#### Standard QBasic Types
+
+| Type | Suffix | Range | Size |
+|------|--------|-------|------|
+| `INTEGER` | `%` | -32,768 to 32,767 | 16-bit |
+| `LONG` | `&` | -2,147,483,648 to 2,147,483,647 | 32-bit |
+| `SINGLE` | `!` | ~3.4E-38 to ~3.4E+38 | 32-bit float |
+| `DOUBLE` | `#` | ~1.7E-308 to ~1.7E+308 | 64-bit float |
+| `STRING` | `$` | Variable length | Dynamic |
+
+#### QB64 Extended Types
+
+| Type | Suffix | Range | Notes |
+|------|--------|-------|-------|
+| `_INTEGER64` | `&&` | -9,223,372,036,854,775,808 to +9,223,372,036,854,775,807 | 64-bit signed |
+| `_UNSIGNED INTEGER` | `~%` | 0 to 65,535 | 16-bit unsigned |
+| `_UNSIGNED LONG` | `~&` | 0 to 4,294,967,295 | 32-bit unsigned |
+| `_UNSIGNED _INTEGER64` | `~&&` | 0 to 18,446,744,073,709,551,615 | 64-bit unsigned |
+
+#### Type Declaration Examples
+
 ```basic
+' Using DIM with AS
+DIM count AS INTEGER
+DIM total AS LONG
+DIM price AS SINGLE
+DIM pi AS DOUBLE
 DIM name AS STRING
-DIM age AS INTEGER
-DIM pi AS SINGLE
 
-name = "QB-COM"
-age = 30
-pi = 3.14159
+' Using suffixes
+count% = 100
+total& = 100000
+price! = 19.99
+pi# = 3.14159265358979
+name$ = "QB-COM"
 
-PRINT "Name: "; name
-PRINT "Age: "; age
-PRINT "Pi: "; pi
-END
+' QB64 64-bit integer
+DIM big AS _INTEGER64
+big = 9223372036854775807&&
 ```
 
-### คำสั่งเงื่อนไข IF/THEN
+---
+
+### Variables and Arrays
+
+#### Simple Variables
+
+```basic
+DIM x AS INTEGER
+x = 10
+PRINT x
+```
+
+#### Arrays
+
+```basic
+' Single dimension (0 to 10, 11 elements)
+DIM arr(10) AS INTEGER
+arr(0) = 100
+arr(5) = 500
+PRINT arr(5)  ' Output: 500
+
+' With explicit bounds
+DIM scores(1 TO 100) AS INTEGER
+scores(50) = 85
+
+' Multi-dimensional
+DIM matrix(3, 3) AS SINGLE
+matrix(1, 1) = 1.0
+matrix(2, 2) = 1.0
+```
+
+---
+
+### Control Structures
+
+#### IF/THEN/ELSE
+
 ```basic
 DIM score AS INTEGER
 score = 85
@@ -95,223 +358,419 @@ ELSEIF score >= 70 THEN
 ELSE
     PRINT "Grade F"
 END IF
-END
+
+' Single-line IF
+IF score = 100 THEN PRINT "Perfect!"
 ```
 
-### ลูป FOR/NEXT
+#### FOR/NEXT Loop
+
 ```basic
-DIM i AS INTEGER
-
+' Count up
 FOR i = 1 TO 10
-    PRINT "Count: "; i
+    PRINT i
 NEXT i
-END
+
+' Count with STEP
+FOR i = 10 TO 0 STEP -2
+    PRINT i
+NEXT i
+
+' Nested loops
+FOR row = 1 TO 3
+    FOR col = 1 TO 3
+        PRINT row; ","; col
+    NEXT col
+NEXT row
 ```
 
-### ลูป WHILE/WEND
+#### WHILE/WEND Loop
+
 ```basic
 DIM n AS INTEGER
 n = 1
 
-WHILE n <= 5
+WHILE n <= 10
     PRINT n
     n = n + 1
 WEND
-END
 ```
 
-### SELECT CASE
+#### DO/LOOP
+
+```basic
+' DO WHILE
+DIM x AS INTEGER
+x = 1
+DO WHILE x < 5
+    PRINT x
+    x = x + 1
+LOOP
+
+' DO UNTIL
+DIM y AS INTEGER
+y = 1
+DO
+    PRINT y
+    y = y + 1
+LOOP UNTIL y > 5
+```
+
+#### SELECT CASE
+
 ```basic
 DIM choice AS INTEGER
 choice = 2
 
 SELECT CASE choice
     CASE 1
-        PRINT "One"
+        PRINT "Option 1"
     CASE 2
-        PRINT "Two"
-    CASE 3
-        PRINT "Three"
+        PRINT "Option 2"
+    CASE 3 TO 5
+        PRINT "Options 3-5"
+    CASE IS > 10
+        PRINT "Greater than 10"
     CASE ELSE
         PRINT "Other"
+END SELECT
+```
+
+---
+
+### String Functions
+
+```basic
+DIM s AS STRING
+s = "Hello World"
+
+' String extraction
+PRINT LEFT$(s, 5)     ' "Hello"
+PRINT RIGHT$(s, 5)    ' "World"
+PRINT MID$(s, 7, 5)   ' "World"
+
+' String information
+PRINT LEN(s)          ' 11
+PRINT ASC("A")        ' 65
+
+' String manipulation
+PRINT UCASE$(s)       ' "HELLO WORLD"
+PRINT LCASE$(s)       ' "hello world"
+PRINT CHR$(65)        ' "A"
+
+' String concatenation
+PRINT "Hello" + " " + "World"
+```
+
+---
+
+### Math Functions
+
+```basic
+' Basic arithmetic
+PRINT 10 + 5    ' Addition
+PRINT 10 - 5    ' Subtraction
+PRINT 10 * 5    ' Multiplication
+PRINT 10 / 3    ' Division
+PRINT 10 \ 3    ' Integer division
+PRINT 10 MOD 3  ' Modulo
+PRINT 2 ^ 8     ' Power
+
+' Math functions
+PRINT ABS(-5)      ' 5
+PRINT SQR(16)      ' 4
+PRINT INT(3.7)     ' 3
+PRINT FIX(-3.7)    ' -3
+PRINT SGN(-10)     ' -1
+PRINT SIN(0)       ' 0
+PRINT COS(0)       ' 1
+PRINT TAN(0)       ' 0
+PRINT ATN(1)       ' 0.785...
+PRINT LOG(2.718)   ' ~1
+PRINT EXP(1)       ' ~2.718
+PRINT RND          ' Random 0-1
+```
+
+---
+
+### File I/O
+
+```basic
+' Write to file
+OPEN "output.txt" FOR OUTPUT AS #1
+PRINT #1, "Line 1"
+PRINT #1, "Line 2"
+CLOSE #1
+
+' Read from file
+DIM line AS STRING
+OPEN "output.txt" FOR INPUT AS #2
+LINE INPUT #2, line
+PRINT "Read: "; line
+CLOSE #2
+
+' Append to file
+OPEN "log.txt" FOR APPEND AS #3
+PRINT #3, "New log entry"
+CLOSE #3
+```
+
+---
+
+### User-Defined Types (TYPE)
+
+```basic
+TYPE Person
+    name AS STRING
+    age AS INTEGER
+    salary AS SINGLE
+END TYPE
+
+DIM emp AS Person
+emp.name = "John Doe"
+emp.age = 30
+emp.salary = 50000.00
+
+PRINT "Name: "; emp.name
+PRINT "Age: "; emp.age
+PRINT "Salary: $"; emp.salary
+```
+
+---
+
+## Examples
+
+### Example 1: Calculator
+
+```basic
+' calculator.bas
+DIM a, b AS SINGLE
+DIM op AS STRING
+
+PRINT "=== Simple Calculator ==="
+INPUT "Enter first number: "; a
+INPUT "Enter second number: "; b
+INPUT "Enter operation (+, -, *, /): "; op
+
+SELECT CASE op
+    CASE "+"
+        PRINT "Result: "; a + b
+    CASE "-"
+        PRINT "Result: "; a - b
+    CASE "*"
+        PRINT "Result: "; a * b
+    CASE "/"
+        IF b <> 0 THEN
+            PRINT "Result: "; a / b
+        ELSE
+            PRINT "Error: Division by zero"
+        END IF
+    CASE ELSE
+        PRINT "Invalid operation"
 END SELECT
 END
 ```
 
-### Array (อาร์เรย์)
+### Example 2: Fibonacci Sequence
+
 ```basic
-DIM arr(5) AS INTEGER
+' fibonacci.bas
+DIM n, i AS INTEGER
+DIM a, b, c AS LONG
 
-arr(0) = 10
-arr(1) = 20
-arr(2) = 30
+INPUT "How many Fibonacci numbers? "; n
 
-PRINT arr(0); arr(1); arr(2)
+a = 0
+b = 1
+
+PRINT "Fibonacci Sequence:"
+FOR i = 1 TO n
+    PRINT a
+    c = a + b
+    a = b
+    b = c
+NEXT i
 END
 ```
 
-### ฟังก์ชันทางคณิตศาสตร์
+### Example 3: Number Guessing Game
+
 ```basic
-PRINT "ABS(-5) = "; ABS(-5)           ' ค่าสัมบูรณ์
-PRINT "SQR(16) = "; SQR(16)           ' รากที่สอง
-PRINT "INT(3.7) = "; INT(3.7)         ' ปัดเศษลง
-PRINT "RND = "; RND                   ' สุ่มเลข 0-1
+' guess.bas
+DIM secret, guess, attempts AS INTEGER
+DIM playAgain AS STRING
+
+RANDOMIZE TIMER
+secret = INT(RND * 100) + 1
+attempts = 0
+
+PRINT "=== Number Guessing Game ==="
+PRINT "I'm thinking of a number between 1 and 100"
+
+DO
+    INPUT "Enter your guess: "; guess
+    attempts = attempts + 1
+    
+    IF guess < secret THEN
+        PRINT "Too low!"
+    ELSEIF guess > secret THEN
+        PRINT "Too high!"
+    ELSE
+        PRINT "Correct! You got it in "; attempts; " attempts!"
+        EXIT DO
+    END IF
+LOOP
+
 END
 ```
 
-### ฟังก์ชันข้อความ
+### Example 4: Prime Number Checker
+
 ```basic
-DIM text AS STRING
-text = "Hello World"
+' primes.bas
+DIM n, i AS INTEGER
+DIM isPrime AS INTEGER
 
-PRINT LEFT$(text, 5)      ' ตัด 5 ตัวแรก: "Hello"
-PRINT RIGHT$(text, 5)     ' ตัด 5 ตัวท้าย: "World"
-PRINT MID$(text, 7, 5)    ' ตัดตั้งแต่ตัวที่ 7 จำนวน 5 ตัว: "World"
-PRINT LEN(text)           ' ความยาว: 11
-PRINT UCASE$(text)        ' ตัวพิมพ์ใหญ่: "HELLO WORLD"
-PRINT LCASE$(text)        ' ตัวพิมพ์เล็ก: "hello world"
-END
-```
+INPUT "Enter a number: "; n
 
-### TYPE (User-Defined Type)
-```basic
-TYPE Point
-    x AS SINGLE
-    y AS SINGLE
-END TYPE
-
-DIM p AS Point
-p.x = 100
-p.y = 200
-
-PRINT "Point: ("; p.x; ", "; p.y; ")"
-END
-```
-
-### CONST (ค่าคงที่)
-```basic
-CONST PI = 3.14159
-CONST MAX_SIZE = 100
-
-PRINT "PI = "; PI
-PRINT "Max Size = "; MAX_SIZE
-END
-```
-
-### File I/O (อ่าน/เขียนไฟล์)
-```basic
-' เขียนไฟล์
-OPEN "data.txt" FOR OUTPUT AS #1
-PRINT #1, "Hello File"
-PRINT #1, "Line 2"
-CLOSE #1
-
-' อ่านไฟล์
-DIM line AS STRING
-OPEN "data.txt" FOR INPUT AS #2
-LINE INPUT #2, line
-PRINT "Read: "; line
-CLOSE #2
-END
-```
-
-### GOSUB/RETURN (ซับรูทีน)
-```basic
-PRINT "Start"
-GOSUB MySub
-PRINT "End"
-END
-
-MySub:
-PRINT "  In subroutine"
-RETURN
-```
-
-### DATA/READ (ข้อมูลในโปรแกรม)
-```basic
-DIM a, b, c AS INTEGER
-
-READ a, b, c
-PRINT a, b, c
-
-DATA 10, 20, 30
+IF n <= 1 THEN
+    PRINT "Not prime"
+ELSEIF n = 2 THEN
+    PRINT "Prime"
+ELSE
+    isPrime = 1
+    FOR i = 2 TO SQR(n)
+        IF n MOD i = 0 THEN
+            isPrime = 0
+            EXIT FOR
+        END IF
+    NEXT i
+    
+    IF isPrime = 1 THEN
+        PRINT "Prime"
+    ELSE
+        PRINT "Not prime"
+    END IF
+END IF
 END
 ```
 
 ---
 
-## 🔧 QB64 Extensions (เฉพาะ QB-COM)
+## Architecture
 
-### ตัวแปร 64-bit
-```basic
-DIM big AS _INTEGER64
-big = 9223372036854775807&&    ' ตัวเลขใหญ่สุด
-PRINT big
-
-DIM ul AS _UNSIGNED LONG
-ul = 4000000000                 ' ค่าไม่ติดลบ
-PRINT ul
-END
-```
-
-### Metacommands
-```basic
-$CONSOLE              ' เปิดโหมด console
-$INCLUDE:"file.bi"   ' รวมไฟล์อื่น
-```
-
----
-
-## 📋 ชนิดข้อมูลที่รองรับ (Data Types)
-
-| ชนิด | ขนาด | คำอธิบาย | ตัวอย่าง |
-|------|------|---------|---------|
-| `INTEGER` | 16-bit | จำนวนเต็ม -32,768 ถึง 32,767 | `DIM x AS INTEGER` |
-| `LONG` | 32-bit | จำนวนเต็มใหญ่ | `DIM x AS LONG` |
-| `SINGLE` | 32-bit | ทศนิยม | `DIM x AS SINGLE` |
-| `DOUBLE` | 64-bit | ทศนิยมความแม่นยำสูง | `DIM x AS DOUBLE` |
-| `STRING` | ตัวแปร | ข้อความ | `DIM s AS STRING` |
-| `_INTEGER64` | 64-bit | QB64: จำนวนเต็ม 64-bit | `DIM x AS _INTEGER64` |
-| `_UNSIGNED LONG` | 32-bit | QB64: ไม่ติดลบ | `DIM x AS _UNSIGNED LONG` |
-
----
-
-## 🏗️ สถาปัตยกรรมโปรเจค (Architecture)
+QB-COM is organized as a Cargo workspace with modular crates:
 
 ```
 QB-COM/
-├── cli/           # คอมมานด์ไลน์อินเตอร์เฟซ
+├── cli/              # Command-line interface
 ├── crates/
-│   ├── core/      # ชนิดข้อมูลหลัก และ error handling
-│   ├── lexer/     # แยกคำ (tokenizer)
-│   ├── parser/    # วิเคราะห์โค้ด สร้าง AST
-│   ├── semantic/  # ตรวจสอบ type และความถูกต้อง
-│   ├── vm/        # Bytecode compiler + Virtual Machine
-│   ├── codegen/   # Code generation (LLVM backend)
-│   └── hal/       # Hardware abstraction (DOS emulation)
-└── examples/      # ตัวอย่างโปรแกรม
+│   ├── core/         # Core types, data structures, errors
+│   ├── lexer/        # Tokenizer (source → tokens)
+│   ├── parser/       # Parser (tokens → AST)
+│   ├── semantic/     # Type checker and validator
+│   ├── vm/           # Bytecode compiler and VM
+│   ├── codegen/      # Code generation backend
+│   └── hal/          # Hardware abstraction layer
+└── examples/         # Example programs
+```
+
+### Compilation Pipeline
+
+```
+Source Code (.bas)
+       ↓
+   Lexer (tokenizer)
+       ↓
+   Tokens
+       ↓
+   Parser
+       ↓
+   AST (Abstract Syntax Tree)
+       ↓
+   Semantic Analyzer
+       ↓
+   Bytecode Compiler
+       ↓
+   Bytecode
+       ↓
+   Virtual Machine
+       ↓
+   Output
 ```
 
 ---
 
-## 🧪 รัน Test Suite
+## Development
+
+### Running Tests
 
 ```bash
-# รัน test ทั้งหมด
+# Run all tests
 cargo test --release
 
-# รันโปรแกรมตัวอย่าง
-cargo run --release -- run examples/test_all.bas
+# Run specific crate tests
+cargo test --release -p qb-vm
+```
+
+### Building Documentation
+
+```bash
+cargo doc --release --open
+```
+
+### Code Style
+
+```bash
+# Check formatting
+cargo fmt -- --check
+
+# Fix formatting
+cargo fmt
+
+# Run linter
+cargo clippy --release
 ```
 
 ---
 
-## 📄 License
+## Contributing
 
-[MIT License](LICENSE) - ใช้งานได้ฟรี แก้ไขได้ แจกจ่ายได้
+Contributions are welcome! Here's how to contribute:
+
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
+3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
+4. **Push** to the branch (`git push origin feature/amazing-feature`)
+5. **Open** a Pull Request
+
+### Areas for Contribution
+
+- Graphics mode implementation
+- Sound support
+- Additional QB64 features
+- Performance optimizations
+- Documentation improvements
+- Bug fixes
 
 ---
 
-## 🔗 Repository
+## License
 
-[https://github.com/thirawat27/QB-COM](https://github.com/thirawat27/QB-COM)
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## Acknowledgments
+
+- Inspired by Microsoft's QBasic and QuickBASIC 4.5
+- QB64 project for modern BASIC extensions
+- Rust programming language and community
+
+---
+
+## Repository
+
+**GitHub:** [https://github.com/thirawat27/QB-COM](https://github.com/thirawat27/QB-COM)
+
+**Issues:** [https://github.com/thirawat27/QB-COM/issues](https://github.com/thirawat27/QB-COM/issues)
