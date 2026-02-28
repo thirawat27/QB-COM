@@ -69,12 +69,45 @@ QB-COM is a complete QBasic/QuickBASIC 4.5 compiler and runtime environment writ
 
 ## Installation
 
-### Prerequisites
+### Windows (One-Command Install)
+
+The easiest way to install QB-COM on Windows:
+
+**PowerShell:**
+```powershell
+iwr -useb https://raw.githubusercontent.com/thirawat27/QB-COM/main/scripts/install.ps1 | iex
+```
+
+**Command Prompt:**
+```cmd
+curl -fsSL https://raw.githubusercontent.com/thirawat27/QB-COM/main/scripts/install.bat -o install.bat && install.bat
+```
+
+### Windows Installer (GUI)
+
+Download and run the Windows installer:
+
+1. Download `QB-COM-Setup-1.0.0.exe` from [Releases](https://github.com/thirawat27/QB-COM/releases)
+2. Run the installer and follow the wizard
+3. The installer will:
+   - Install QB-COM to `Program Files\QB-COM`
+   - Add QB-COM to your system PATH
+   - Create Start Menu shortcuts
+   - Create an uninstaller
+
+**Silent Installation:**
+```cmd
+QB-COM-Setup-1.0.0.exe /S
+```
+
+### Build from Source
+
+#### Prerequisites
 
 - [Rust](https://rustup.rs/) 1.70 or later
 - Git (for cloning)
 
-### Method 1: Quick Setup (Recommended)
+#### Quick Setup Script
 
 **Windows:**
 ```batch
@@ -698,6 +731,46 @@ Source Code (.bas)
        ↓
    Output
 ```
+
+---
+
+## Building the Installer (Windows)
+
+To build the Windows installer from source, you need:
+
+### Prerequisites
+
+1. [NSIS (Nullsoft Scriptable Install System)](https://nsis.sourceforge.io/Download)
+2. Rust toolchain
+
+### Build Steps
+
+**Using PowerShell:**
+```powershell
+cd scripts
+.\build-installer.ps1
+```
+
+**Using Command Prompt:**
+```batch
+cd scripts
+build-installer.bat
+```
+
+### Output
+
+The installer will be created at:
+```
+installer\QB-COM-Setup-1.0.0.exe
+```
+
+### Installer Features
+
+- **Modern UI**: Professional installer wizard
+- **PATH Management**: Optionally add QB-COM to system PATH
+- **Shortcuts**: Start Menu and Desktop shortcuts
+- **Uninstaller**: Clean uninstall via Control Panel
+- **Silent Mode**: Support for `/S` silent installation
 
 ---
 
