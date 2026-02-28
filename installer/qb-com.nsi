@@ -16,7 +16,7 @@
 
 ; Installer Configuration
 Name "${APP_NAME} ${APP_VERSION}"
-OutFile "QB-COM-Setup-${APP_VERSION}.exe"
+OutFile "QB-COM-Setup.exe"
 InstallDir "${INSTALL_DIR}"
 InstallDirRegKey HKCU "Software\QB-COM" "InstallDir"
 RequestExecutionLevel admin
