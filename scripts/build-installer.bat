@@ -6,22 +6,22 @@ echo   QB-COM Windows Installer Builder
 echo ==========================================
 echo.
 
-:: Check if NSIS is installed
-where makensis >nul 2>&1
+:: Check if Inno Setup is installed
+where iscc >nul 2>&1
 if %errorlevel% neq 0 (
-    echo [ERROR] NSIS is not installed or not in PATH.
+    echo [ERROR] Inno Setup is not installed or not in PATH.
     echo.
-    echo Please install NSIS first:
-    echo   1. Download from: https://nsis.sourceforge.io/Download
+    echo Please install Inno Setup first:
+    echo   1. Download from: https://jrsoftware.org/isdl.php
     echo   2. Install with default settings
-    echo   3. Add NSIS to your PATH environment variable
-    echo      (e.g., C:\Program Files (x86)\NSIS)
+    echo   3. Add Inno Setup to your PATH environment variable
+    echo      (e.g., C:\Program Files (x86)\Inno Setup 6)
     echo.
     pause
     exit /b 1
 )
 
-echo [OK] NSIS found
+echo [OK] Inno Setup found
 echo.
 
 :: Check if Rust is installed
@@ -68,9 +68,9 @@ if not exist "..\installer" mkdir "..\installer"
 echo [OK] Files ready
 echo.
 
-echo [3/3] Building installer with NSIS...
+echo [3/3] Building installer with Inno Setup...
 cd ..\installer
-makensis qb-com.nsi
+iscc qb-com.iss
 if %errorlevel% neq 0 (
     echo [ERROR] Installer creation failed!
     cd ..\scripts

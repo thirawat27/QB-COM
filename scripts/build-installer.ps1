@@ -27,16 +27,16 @@ Write-Header "QB-COM Windows Installer Builder"
 # Check prerequisites
 Write-Host "Checking prerequisites..." -ForegroundColor Yellow
 
-if (-not (Test-Command "makensis")) {
-    Write-Host "[ERROR] NSIS is not installed or not in PATH." -ForegroundColor Red
+if (-not (Test-Command "iscc")) {
+    Write-Host "[ERROR] Inno Setup is not installed or not in PATH." -ForegroundColor Red
     Write-Host ""
-    Write-Host "Please install NSIS first:"
-    Write-Host "  1. Download from: https://nsis.sourceforge.io/Download"
+    Write-Host "Please install Inno Setup first:"
+    Write-Host "  1. Download from: https://jrsoftware.org/isdl.php"
     Write-Host "  2. Install with default settings"
-    Write-Host "  3. Add NSIS to your PATH (e.g., C:\Program Files (x86)\NSIS)"
+    Write-Host "  3. Add Inno Setup to your PATH (e.g., C:\Program Files (x86)\Inno Setup 6)"
     exit 1
 }
-Write-Host "[OK] NSIS found" -ForegroundColor Green
+Write-Host "[OK] Inno Setup found" -ForegroundColor Green
 
 if (-not (Test-Command "cargo")) {
     Write-Host "[ERROR] Rust/Cargo is not installed." -ForegroundColor Red
@@ -47,7 +47,7 @@ if (-not (Test-Command "cargo")) {
 Write-Host "[OK] Rust found" -ForegroundColor Green
 
 # Get version from Cargo.toml
-$ cargoToml = Get-Content "..\Cargo.toml" -Raw
+$cargoToml = Get-Content "..\Cargo.toml" -Raw
 if ($cargoToml -match 'version\s*=\s*"([^"]+)"') {
     $Version = $matches[1]
 }
@@ -87,10 +87,10 @@ if (-not (Test-Path $installerDir)) {
 }
 
 # Build installer
-Write-Host "[2/3] Building installer with NSIS..." -ForegroundColor Yellow
+Write-Host "[2/3] Building installer with Inno Setup..." -ForegroundColor Yellow
 Push-Location $installerDir
 try {
-    $output = makensis qb-com.nsi 2>&1
+    $output = iscc qb-com.iss 2>&1
     if ($LASTEXITCODE -ne 0) {
         Write-Host $output -ForegroundColor Red
         throw "Installer creation failed!"
@@ -102,21 +102,18 @@ try {
 Write-Host "[OK] Installer created successfully" -ForegroundColor Green
 Write-Host ""
 
-# Find created installer
-$installer = Get-ChildItem "$installerDir\QB-COM-Setup-*.exe" | Select-Object -First 1
-if ($installer) {
-    $installerSize = $installer.Length / 1MB
-    Write-Host "[3/3] Installer details:" -ForegroundColor Yellow
-    Write-Host "  File: $($installer.Name)" -ForegroundColor White
-    Write-Host "  Path: $($installer.FullName)" -ForegroundColor White
-    Write-Host "  Size: $([math]::Round($installerSize, 2)) MB" -ForegroundColor White
+# Verify installer exists
+$installerPath = "$installerDir\QB-COM-Setup.exe"
+if (Test-Path $installerPath) {
+    $installerSize = (Get-Item $installerPath).Length / 1MB
+    Write-Host "[3/3] Verifying installer..." -ForegroundColor Yellow
+    Write-Host "Installer size: $([math]::Round($installerSize, 2)) MB" -ForegroundColor Gray
+    Write-Host "Installer location: $installerPath" -ForegroundColor Gray
+    Write-Host "[OK] Installer verified" -ForegroundColor Green
 } else {
-    Write-Host "[WARNING] Could not find created installer" -ForegroundColor Yellow
+    Write-Host "[WARNING] Installer not found at expected location" -ForegroundColor Yellow
 }
 
 Write-Header "Build Complete!"
-
-if (-not $Silent) {
-    Write-Host "Press any key to exit..."
-    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-}
+Write-Host "Installer: $installerPath" -ForegroundColor White
+Write-Host ""

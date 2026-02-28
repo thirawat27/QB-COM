@@ -43,27 +43,27 @@ QB-COM is a complete QBasic/QuickBASIC 4.5 compiler and runtime environment writ
 
 ### Core QBasic 4.5 Support
 
-| Feature | Status | Notes |
-|---------|--------|-------|
-| Data Types | ✅ Complete | INTEGER, LONG, SINGLE, DOUBLE, STRING |
-| Variables | ✅ Complete | Suffixes (%&!#$), Arrays, User Types |
-| Control Flow | ✅ Complete | IF/THEN, FOR/NEXT, WHILE/WEND, DO/LOOP |
-| Subroutines | ✅ Complete | GOSUB/RETURN, SUB/FUNCTION |
-| I/O Operations | ✅ Complete | PRINT, INPUT, File I/O |
-| String Functions | ✅ Complete | LEFT$, RIGHT$, MID$, UCASE$, LCASE$ |
-| Math Functions | ✅ Complete | ABS, SQR, SIN, COS, RND, etc. |
-| Graphics | ⚠️ Partial | SCREEN, PSET, LINE (text mode) |
+| Feature          | Status      | Notes                                  |
+| ---------------- | ----------- | -------------------------------------- |
+| Data Types       | ✅ Complete | INTEGER, LONG, SINGLE, DOUBLE, STRING  |
+| Variables        | ✅ Complete | Suffixes (%&!#$), Arrays, User Types   |
+| Control Flow     | ✅ Complete | IF/THEN, FOR/NEXT, WHILE/WEND, DO/LOOP |
+| Subroutines      | ✅ Complete | GOSUB/RETURN, SUB/FUNCTION             |
+| I/O Operations   | ✅ Complete | PRINT, INPUT, File I/O                 |
+| String Functions | ✅ Complete | LEFT$, RIGHT$, MID$, UCASE$, LCASE$    |
+| Math Functions   | ✅ Complete | ABS, SQR, SIN, COS, RND, etc.          |
+| Graphics         | ⚠️ Partial  | SCREEN, PSET, LINE (text mode)         |
 
 ### QB64 Extensions
 
-| Extension | Status | Example |
-|-----------|--------|---------|
-| `_INTEGER64` | ✅ | `DIM x AS _INTEGER64` |
-| `_UNSIGNED INTEGER` | ✅ | `DIM x AS _UNSIGNED INTEGER` |
-| `_UNSIGNED LONG` | ✅ | `DIM x AS _UNSIGNED LONG` |
-| `CONST` | ✅ | `CONST PI = 3.14159` |
-| `TYPE`/`END TYPE` | ✅ | User-defined structures |
-| Metacommands | ✅ | `$CONSOLE`, `$DYNAMIC`, `$INCLUDE` |
+| Extension           | Status | Example                            |
+| ------------------- | ------ | ---------------------------------- |
+| `_INTEGER64`        | ✅     | `DIM x AS _INTEGER64`              |
+| `_UNSIGNED INTEGER` | ✅     | `DIM x AS _UNSIGNED INTEGER`       |
+| `_UNSIGNED LONG`    | ✅     | `DIM x AS _UNSIGNED LONG`          |
+| `CONST`             | ✅     | `CONST PI = 3.14159`               |
+| `TYPE`/`END TYPE`   | ✅     | User-defined structures            |
+| Metacommands        | ✅     | `$CONSOLE`, `$DYNAMIC`, `$INCLUDE` |
 
 ---
 
@@ -74,11 +74,13 @@ QB-COM is a complete QBasic/QuickBASIC 4.5 compiler and runtime environment writ
 The easiest way to install QB-COM on Windows:
 
 **PowerShell:**
+
 ```powershell
 iwr -useb https://raw.githubusercontent.com/thirawat27/QB-COM/main/scripts/install.ps1 | iex
 ```
 
 **Command Prompt:**
+
 ```cmd
 curl -fsSL https://raw.githubusercontent.com/thirawat27/QB-COM/main/scripts/install.bat -o install.bat && install.bat
 ```
@@ -87,7 +89,7 @@ curl -fsSL https://raw.githubusercontent.com/thirawat27/QB-COM/main/scripts/inst
 
 Download and run the Windows installer:
 
-1. Download `QB-COM-Setup-1.0.0.exe` from [Releases](https://github.com/thirawat27/QB-COM/releases)
+1. Download `QB-COM-Setup.exe` from [Releases](https://github.com/thirawat27/QB-COM/releases)
 2. Run the installer and follow the wizard
 3. The installer will:
    - Install QB-COM to `Program Files\QB-COM`
@@ -96,8 +98,9 @@ Download and run the Windows installer:
    - Create an uninstaller
 
 **Silent Installation:**
+
 ```cmd
-QB-COM-Setup-1.0.0.exe /S
+QB-COM-Setup.exe /VERYSILENT /SUPPRESSMSGBOXES /NORESTART
 ```
 
 ### Build from Source
@@ -110,6 +113,7 @@ QB-COM-Setup-1.0.0.exe /S
 #### Quick Setup Script
 
 **Windows:**
+
 ```batch
 git clone https://github.com/thirawat27/QB-COM.git
 cd QB-COM
@@ -117,6 +121,7 @@ setup.bat
 ```
 
 **Linux/macOS:**
+
 ```bash
 git clone https://github.com/thirawat27/QB-COM.git
 cd QB-COM
@@ -170,6 +175,7 @@ qb run hello.bas
 ```
 
 **Output:**
+
 ```
 Hello, World!
 Welcome to QB-COM
@@ -199,9 +205,11 @@ qb run program.bas
 ```
 
 **Options:**
+
 - No additional options for `run`
 
 **Example:**
+
 ```bash
 qb run examples/hello.bas
 ```
@@ -222,6 +230,7 @@ qb build program.bas -o output.qbc
 | `-o, --output <file>` | Specify output filename |
 
 **Example:**
+
 ```bash
 qb build mygame.bas -o mygame.qbc
 qb run mygame.qbc
@@ -238,6 +247,7 @@ qb tokenize program.bas
 ```
 
 **Example Output:**
+
 ```
 0: Print (line 1, col 1)
 1: String("Hello") (line 1, col 7)
@@ -267,6 +277,7 @@ qb check program.bas
 ```
 
 **Output:**
+
 - No output = No errors found
 - Error messages = Issues to fix
 
@@ -281,6 +292,7 @@ qb repl
 ```
 
 **Example Session:**
+
 ```
 QB-COM REPL
 Type 'exit' to quit
@@ -302,22 +314,22 @@ Type 'exit' to quit
 
 #### Standard QBasic Types
 
-| Type | Suffix | Range | Size |
-|------|--------|-------|------|
-| `INTEGER` | `%` | -32,768 to 32,767 | 16-bit |
-| `LONG` | `&` | -2,147,483,648 to 2,147,483,647 | 32-bit |
-| `SINGLE` | `!` | ~3.4E-38 to ~3.4E+38 | 32-bit float |
-| `DOUBLE` | `#` | ~1.7E-308 to ~1.7E+308 | 64-bit float |
-| `STRING` | `$` | Variable length | Dynamic |
+| Type      | Suffix | Range                           | Size         |
+| --------- | ------ | ------------------------------- | ------------ |
+| `INTEGER` | `%`    | -32,768 to 32,767               | 16-bit       |
+| `LONG`    | `&`    | -2,147,483,648 to 2,147,483,647 | 32-bit       |
+| `SINGLE`  | `!`    | ~3.4E-38 to ~3.4E+38            | 32-bit float |
+| `DOUBLE`  | `#`    | ~1.7E-308 to ~1.7E+308          | 64-bit float |
+| `STRING`  | `$`    | Variable length                 | Dynamic      |
 
 #### QB64 Extended Types
 
-| Type | Suffix | Range | Notes |
-|------|--------|-------|-------|
-| `_INTEGER64` | `&&` | -9,223,372,036,854,775,808 to +9,223,372,036,854,775,807 | 64-bit signed |
-| `_UNSIGNED INTEGER` | `~%` | 0 to 65,535 | 16-bit unsigned |
-| `_UNSIGNED LONG` | `~&` | 0 to 4,294,967,295 | 32-bit unsigned |
-| `_UNSIGNED _INTEGER64` | `~&&` | 0 to 18,446,744,073,709,551,615 | 64-bit unsigned |
+| Type                   | Suffix | Range                                                    | Notes           |
+| ---------------------- | ------ | -------------------------------------------------------- | --------------- |
+| `_INTEGER64`           | `&&`   | -9,223,372,036,854,775,808 to +9,223,372,036,854,775,807 | 64-bit signed   |
+| `_UNSIGNED INTEGER`    | `~%`   | 0 to 65,535                                              | 16-bit unsigned |
+| `_UNSIGNED LONG`       | `~&`   | 0 to 4,294,967,295                                       | 32-bit unsigned |
+| `_UNSIGNED _INTEGER64` | `~&&`  | 0 to 18,446,744,073,709,551,615                          | 64-bit unsigned |
 
 #### Type Declaration Examples
 
@@ -643,7 +655,7 @@ PRINT "I'm thinking of a number between 1 and 100"
 DO
     INPUT "Enter your guess: "; guess
     attempts = attempts + 1
-    
+
     IF guess < secret THEN
         PRINT "Too low!"
     ELSEIF guess > secret THEN
@@ -678,7 +690,7 @@ ELSE
             EXIT FOR
         END IF
     NEXT i
-    
+
     IF isPrime = 1 THEN
         PRINT "Prime"
     ELSE
@@ -740,18 +752,20 @@ To build the Windows installer from source, you need:
 
 ### Prerequisites
 
-1. [NSIS (Nullsoft Scriptable Install System)](https://nsis.sourceforge.io/Download)
+1. [Inno Setup](https://jrsoftware.org/isdl.php)
 2. Rust toolchain
 
 ### Build Steps
 
 **Using PowerShell:**
+
 ```powershell
 cd scripts
 .\build-installer.ps1
 ```
 
 **Using Command Prompt:**
+
 ```batch
 cd scripts
 build-installer.bat
@@ -760,8 +774,9 @@ build-installer.bat
 ### Output
 
 The installer will be created at:
+
 ```
-installer\QB-COM-Setup-1.0.0.exe
+installer\QB-COM-Setup.exe
 ```
 
 ### Installer Features
@@ -770,7 +785,7 @@ installer\QB-COM-Setup-1.0.0.exe
 - **PATH Management**: Optionally add QB-COM to system PATH
 - **Shortcuts**: Start Menu and Desktop shortcuts
 - **Uninstaller**: Clean uninstall via Control Panel
-- **Silent Mode**: Support for `/S` silent installation
+- **Silent Mode**: Support for `/VERYSILENT` silent installation
 
 ---
 
